@@ -1,0 +1,14 @@
+/dev/pcmC0D0c             0666   audio     audio
+/dev/pcmC0D0p             0666   audio     audio
+/dev/controlC0             0666   audio     audio
+/dev/timer             0666   audio     audio
+
+
+/dev/dpram0             0771   radio     radio
+/dev/dpram1             0771   radio     radio
+/dev/dpramerr             0771   radio     radio
+
+/dev/multipdp             0770   radio     radio
+/dev/accel             0770   system     system
+/dev/light_sensor             0770   system     system
+/dev/proximity_sensor             0770   system     system

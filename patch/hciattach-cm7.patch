@@ -1,0 +1,5 @@
+1130c1130,1131
+< 	{ "texas",      0x0000, 0x0000, HCI_UART_LL,   115200, 115200, FLOW_CTL, NULL, texas,    texas2 },
+---
+> //	{ "texas",      0x0000, 0x0000, HCI_UART_LL,   115200, 115200, FLOW_CTL, NULL, texas,    texas2 },
+> 	{ "texas",      0x0000, 0x0000, HCI_UART_LL,   115200, 3000000, FLOW_CTL, NULL, texas, NULL/*texas_continue_script*/ },

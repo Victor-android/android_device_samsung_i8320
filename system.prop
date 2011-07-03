@@ -1,0 +1,21 @@
+#
+# system.prop for generic sdk 
+#
+
+rild.libpath=/system/lib/libsec-ril.so
+rild.libargs=-d /dev/ttyS0
+ro.config.sync = yes
+ro.sf.lcd_density=240
+keyguard.no_require_sim=1
+dalvik.vm.heapsize=24m
+dalvik.vm.dexopt-flags=m=y
+dalvik.vm.execution-mode=int:jit
+wifi.interface=tiwlan0
+alsa.mixer.playback.master=DAC2 Analog
+alsa.mixer.capture.master=Analog
+ro.media.dec.aud.wma.enabled=1
+ro.media.dec.vid.wmv.enabled=1
+persist.sys.language=zh
+persist.sys.country=CN
+persist.sys.timezone=GMT+4:00
+persist.usb.default.pid=0x1354

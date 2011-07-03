@@ -1,0 +1,182 @@
+on boot
+    setprop ro.radio.use-ppp no
+    setprop ro.radio.noril yes
+    setprop net.eth0.dns1 8.8.8.8
+    setprop net.dns1 8.8.8.8
+    setprop debug.video.rotateoverlay 1
+
+    insmod /system/lib/modules/param.ko
+    insmod /system/lib/modules/dpram.ko
+    insmod /system/lib/modules/kxsd9.ko
+    insmod /system/lib/modules/vibrator.ko
+    insmod /system/lib/modules/pl_sensor.ko
+    insmod /system/lib/modules/Si4709_driver.ko
+#    insmod /system/lib/modules/cam_m4mo.ko
+#    insmod /system/lib/modules/cam_s5ka3dfx.ko
+#    insmod /system/lib/modules/mulitpdp.ko
+#    insmod /system/lib/modules/omaplfb.ko
+#    insmod /system/lib/modules/pvrsrvkm.ko
+
+# change permissions for alsa nodes
+    symlink /dev/snd/pcmC0D0c /dev/pcmC0D0c
+    symlink /dev/snd/pcmC0D0p /dev/pcmC0D0p
+    symlink /dev/snd/controlC0 /dev/controlC0
+    symlink /dev/snd/timer /dev/timer
+    chown audio audio /dev/pcmC0D0c
+    chown audio audio /dev/pcmC0D0p
+    chown audio audio /dev/controlC0
+    chown audio audio /dev/timer
+
+# change permissions for modem
+#    chmod 0660 /dev/ttyS0
+#    chown radio radio /dev/ttyS0
+
+    
+#Owners, Modes for Bluetooth
+    chmod 0660 /dev/ttyS1
+    chown bluetooth bluetooth /dev/ttyS1
+    chmod 0660 sys/class/rfkill/rfkill0/state
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    write sys/class/rfkill/rfkill0/state 0
+        
+# change permissions for bridge.  Symlink search directory
+    chmod 0777 /dev/DspBridge
+
+# change permissions for Camera
+    chmod 0777 /dev/video5
+    chmod 0777 /dev/video0
+
+# change permissions for Overlay
+    chmod 0777 /dev/video1
+    chmod 0777 /dev/video2
+    
+# change permissions for overlay managers and display devices
+    chmod 0777 /sys/devices/platform/omapdss/manager0/name
+    chmod 0777 /sys/devices/platform/omapdss/manager1/name
+
+    chmod 0777 /sys/devices/platform/omapdss/display0/name
+    chmod 0777 /sys/devices/platform/omapdss/display1/name
+
+    chmod 0777 /sys/devices/platform/omapdss/display0/enabled
+    chmod 0777 /sys/devices/platform/omapdss/display1/enabled
+
+    chmod 0777 /sys/devices/platform/omapdss/display1/timings
+    chmod 0777 /sys/devices/platform/omapdss/display0/timings
+
+    chmod 0777 /sys/devices/platform/omapdss/overlay0/manager
+    chmod 0777 /sys/devices/platform/omapdss/overlay1/manager
+    chmod 0777 /sys/devices/platform/omapdss/overlay2/manager
+
+    chmod 0777 /sys/devices/platform/omapdss/overlay0/enabled
+    chmod 0777 /sys/devices/platform/omapdss/overlay1/enabled
+    chmod 0777 /sys/devices/platform/omapdss/overlay2/enabled
+
+# change permissions for Previewer and Resizer
+    chmod 0777 /dev/omap-previewer
+    chmod 0777 /dev/omap-resizer
+
+    #chmod 0777 /dev/video6
+    #chmod 0777 /dev/video10
+    #chmod 0777 /dev/omap-prev2resz
+    
+# change permissions for wifi        
+    chown wifi wifi /system/etc/wifi
+    chmod 0770 /system/etc/wifi
+    chown wifi wifi /system/etc/wifi/wpa_supplicant.conf
+    chmod 0660 /system/etc/wifi/wpa_supplicant.conf
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+
+    chmod 0666 /dev/pvrsrvkm
+    #chown system system /dev/accel
+    #chmod 0777 /dev/accel
+
+    chmod 0771 /dev/dpram0
+    chmod 0771 /dev/dpram1
+    chmod 0771 /dev/dpramerr
+
+    chown system system /sys/class/timed_output/vibrator/enable
+        
+    chown system system /sys/class/leds/led1_B/trigger
+    chown system system /sys/class/leds/led1_R/brightness
+	chown system system /sys/class/leds/led1_G/brightness    
+	chown system system /sys/class/leds/led1_B/brightness
+    chmod 0660 /sys/class/leds/led1_B/trigger
+    chmod 0644 /system/media/bootanimation.zip
+#superuser
+    chmod 4755 /system/bin/su
+
+service wlan_init /system/bin/wlaninit
+        oneshot
+
+service pvr /system/bin/rc.pvr start
+    
+service wlan_loader /system/bin/wlan_loader \
+         -f /system/etc/wifi/firmware.bin \
+         -i /system/etc/wifi/tiwlan.ini \
+         -e /system/etc/wifi/nvs_map.bin
+         disabled
+         oneshot
+ 
+service wpa_supplicant /system/bin/wpa_supplicant -Dtiwlan0 -itiwlan0 -c/data/misc/wifi/wpa_supplicant.conf -dd
+         socket wpa_tiwlan0 dgram 660 wifi wifi
+         disabled
+         oneshot
+ 
+service dhcpcd_tiwlan0 /system/bin/dhcpcd -ABKL -d tiwlan0
+         disabled 
+         oneshot
+
+# TI WLAN Soft AP related services and configuration
+
+service wlan_ap_loader /system/bin/tiap_loader \
+        -f /system/etc/wifi/softap/firmware_ap.bin \
+        -i /system/etc/wifi/softap/tiwlan_ap.ini
+        disabled
+        oneshot
+
+service hostapd /system/bin/hostap -dd /data/misc/wifi/hostapd.conf
+        disabled
+        oneshot
+
+# OMAP specific services start here
+
+# load DSP firmware
+service baseimage /system/bin/cexec.out /system/lib/dsp/baseimage.dof
+    user root
+    group audio
+    oneshot
+
+service fw3a /system/bin/fw3a_core
+    user media
+    group system camera
+
+service bootsound /system/bin/playmp3
+    user media
+    group audio
+    oneshot
+
+#service uim /system/xbin/uim /dev/ttyO1 3000000 1 /sys/uim/pid 21
+#   user root
+#   group media bluetooth
+#   oneshot
+
+service hciattach /system/bin/hciattach /dev/ttyS1 texas 3000000
+    user bluetooth
+    group bluetooth net_bt_admin misc
+    disabled
+    oneshot
+                     
+#service DR-daemon /system/bin/drexe
+#    user rootfs
+
+#service efs-daemon /system/bin/efsd30
+#service efs-daemon /system/bin/efsd
+
+#service tapi-server /sbin/tapi_server
+#    socket tapi-server stream 666 root radio
+#    user root
+#    group radio cache inet misc audio
+# Insert multipdp module after boot
+#service multipdp_module /system/bin/toolbox insmod /system/lib/modules/multipdp.ko
+#    oneshot
+

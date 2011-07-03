@@ -1,0 +1,73 @@
+From 6dd62ba15b1782592ca1fe7cb5cca615f1d86fca Mon Sep 17 00:00:00 2001
+From: mephistophilis <mephistophilis@gmail.com>
+Date: Tue, 22 Feb 2011 11:03:19 +0800
+Subject: [PATCH] omap3
+
+Change-Id: I92f0aa21ba5c6b82826716a0a552cc05ccba2eee
+---
+ camera-omap3/CameraHal.h         |    4 ++--
+ camera-omap3/CameraHal_Utils.cpp |    1 +
+ liboverlay/overlay_common.h      |    4 ++--
+ liboverlay/v4l2_utils.c          |    4 ++--
+ 4 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/camera-omap3/CameraHal.h b/camera-omap3/CameraHal.h
+index 65a96d1..c3fb1cc 100644
+--- a/camera-omap3/CameraHal.h
++++ b/camera-omap3/CameraHal.h
+@@ -94,8 +94,8 @@ extern "C" {
+ #define VIDEO_DEVICE        "/dev/video5"
+ #define MIN_WIDTH           128
+ #define MIN_HEIGHT          96
+-#define PICTURE_WIDTH   3264 /* 5mp - 2560. 8mp - 3280 */ /* Make sure it is a multiple of 16. */
+-#define PICTURE_HEIGHT  2448 /* 5mp - 2048. 8mp - 2464 */ /* Make sure it is a multiple of 16. */
++#define PICTURE_WIDTH   2560 /* 5mp - 2560. 8mp - 3280 */ /* Make sure it is a multiple of 16. */
++#define PICTURE_HEIGHT  2048 /* 5mp - 2048. 8mp - 2464 */ /* Make sure it is a multiple of 16. */
+ #define PREVIEW_WIDTH 176
+ #define PREVIEW_HEIGHT 144
+ #define CAPTURE_8MP_WIDTH        3280
+diff --git a/camera-omap3/CameraHal_Utils.cpp b/camera-omap3/CameraHal_Utils.cpp
+index 9a8857e..b6dcd6a 100755
+--- a/camera-omap3/CameraHal_Utils.cpp
++++ b/camera-omap3/CameraHal_Utils.cpp
+@@ -29,6 +29,7 @@
+ #include "CameraHal.h"
+ #include "zoom_step.inc"
+ 
++#define DEBUG_LOG
+ #define ASPECT_RATIO_FLAG_KEEP_ASPECT_RATIO     (1<<0)  // By default is enabled
+ #define ASPECT_RATIO_FLAG_SHRINK_WHOLE_SRC      (1<<1)
+ #define ASPECT_RATIO_FLAG_CROP_BY_PHYSICAL      (1<<2)
+diff --git a/liboverlay/overlay_common.h b/liboverlay/overlay_common.h
+index f2a7c8f..a126664 100755
+--- a/liboverlay/overlay_common.h
++++ b/liboverlay/overlay_common.h
+@@ -43,8 +43,8 @@
+ #define NUM_BUFFERS_TO_BE_QUEUED_FOR_OPTIMAL_PERFORMANCE    3
+ #define NUM_OVERLAY_BUFFERS_REQUESTED  (6)
+ /* These values should come from Surface Flinger */
+-#define LCD_WIDTH 800
+-#define LCD_HEIGHT 480
++#define LCD_WIDTH 480
++#define LCD_HEIGHT 800
+ #define TV_WIDTH 720
+ #define TV_HEIGHT 480
+ #define MAX_NUM_OVERLAYS 2
+diff --git a/liboverlay/v4l2_utils.c b/liboverlay/v4l2_utils.c
+index 1fbac88..e725693 100644
+--- a/liboverlay/v4l2_utils.c
++++ b/liboverlay/v4l2_utils.c
+@@ -326,8 +326,8 @@ int v4l2_overlay_set_position(int fd, int32_t x, int32_t y, int32_t w, int32_t h
+     LOGV("v4l2_overlay_set_position:: w=%d h=%d", format.fmt.win.w.width, format.fmt.win.w.height);
+ 
+     if (mRotateOverlay) {
+-        w = 480;
+-        h = 800;
++        w = 800;
++        h = 480;
+         x = 0;
+         y = 0;
+     }
+-- 
+1.7.4.1
+
